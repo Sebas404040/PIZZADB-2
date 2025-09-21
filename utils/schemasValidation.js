@@ -38,7 +38,7 @@ export const pizzasSchema = {
                 description: "debe ser una cadena de la lista de valores permitidos y es obligatorio"
             },
             precio: {
-                bsonType: "double",
+                bsonType: ["double", "int"],
                 minimum: 0,
                 description: "debe ser un número de punto flotante y es obligatorio"
             },
