@@ -50,6 +50,51 @@ export const pizzasSchema = {
     }
 };
 
+export const clientesSchema = {
+    $jsonSchema: {
+        bsonType: "object",
+        title: "Esquema de Cliente",
+        required: ["nombre", "telefono", "direccion"],
+        properties: {
+            nombre: {
+                bsonType: "string",
+                description: "debe ser una cadena y es obligatorio"
+            },
+            telefono: {
+                bsonType: "string",
+                description: "debe ser una cadena y es obligatorio"
+            },
+            direccion: {
+                bsonType: "string",
+                description: "debe ser una cadena y es obligatorio"
+            }
+        }
+    }
+};
+
+export const repartidoresSchema = {
+    $jsonSchema: {
+        bsonType: "object",
+        title: "Esquema de Repartidor",
+        required: ["nombre", "zona", "estado"],
+        properties: {
+            nombre: {
+                bsonType: "string",
+                description: "debe ser una cadena y es obligatorio"
+            },
+            zona: {
+                bsonType: "string",
+                description: "debe ser una cadena y es obligatorio"
+            },
+            estado: {
+                bsonType: "string",
+                enum: ["disponible", "ocupado"],
+                description: "debe ser 'disponible' u 'ocupado' y es obligatorio"
+            }
+        }
+    }
+};
+
 export const pedidosSchema = {
     $jsonSchema: {
         bsonType: "object",
@@ -91,29 +136,6 @@ export const pedidosSchema = {
             repartidorAsignado: {
                 bsonType: "objectId",
                 description: "debe ser un ObjectId de la colección repartidores y es obligatorio"
-            }
-        }
-    }
-};
-
-export const repartidoresSchema = {
-    $jsonSchema: {
-        bsonType: "object",
-        title: "Esquema de Repartidor",
-        required: ["nombre", "zona", "estado"],
-        properties: {
-            nombre: {
-                bsonType: "string",
-                description: "debe ser una cadena y es obligatorio"
-            },
-            zona: {
-                bsonType: "string",
-                description: "debe ser una cadena y es obligatorio"
-            },
-            estado: {
-                bsonType: "string",
-                enum: ["disponible", "ocupado"],
-                description: "debe ser 'disponible' u 'ocupado' y es obligatorio"
             }
         }
     }
