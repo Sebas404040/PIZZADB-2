@@ -10,7 +10,19 @@ class Notificador {
         try {
             const collection = await database.getCollection("pedidos");
 
+            // Creamos una fecha que representa exactamente hace un mes desde ahora.
+            const ultimoMes = new Date();
+            ultimoMes.setMonth(ultimoMes.getMonth() - 1);
+
             const pipeline = [
+                // Filtra los documentos para incluir solo aquellos cuya 'fecha'
+                // sea mayor o igual ($gte) a la de hace un mes.
+                {
+                    $match: {
+                        fecha: { $gte: ultimoMes }
+                    }
+                },
+
                 // 1. Descomponer el array de pizzas de cada pedido
                 { $unwind: "$pizzas" },
 
