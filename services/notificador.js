@@ -74,6 +74,49 @@ class Notificador {
             console.error(chalk.red("Error al generar el reporte de ingredientes:"), error);
         }
     }
+
+    async mostrarPromedioPrecioPorCategoria() {
+        try {
+            const collection = await database.getCollection("pizzas");
+
+            const pipeline = [
+                // 1. Agrupar los documentos por el campo 'categoria'
+                {
+                    $group: {
+                        _id: "$categoria",
+                        // Calcular el promedio del campo 'precio' para cada grupo
+                        precioPromedio: { $avg: "$precio" }
+                    }
+                },
+                // 2. Ordenar los resultados por el promedio de precio, de mayor a menor
+                {
+                    $sort: { precioPromedio: -1 }
+                },
+                // 3. Formatear la salida para que sea más legible
+                {
+                    $project: {
+                        _id: 0,
+                        Categoría: "$_id",
+                        "Precio Promedio": { $round: ["$precioPromedio", 2] }
+                    }
+                }
+            ];
+
+            const resultado = await collection.aggregate(pipeline).toArray();
+            console.log(chalk.cyan.bold("\n--- 📊 Reporte: Promedio de Precios por Categoría ---"));
+
+            if (resultado.length > 0) {
+                console.table(resultado);
+            } else {
+                console.log(chalk.blue("No se encontraron pizzas para generar este reporte."));
+            }
+
+        } catch (error) {
+            console.error(chalk.red("Error al generar el reporte de precios por categoría:"), error);
+        } finally {
+            await database.desconectar();
+        }
+    }
 }
 
 export default new Notificador();
