@@ -112,13 +112,13 @@ async function VerReportes() {
 
     switch (reporte) {
         case 'Ingredientes más utilizados (último mes)':
-            await ReporteService.ingredientesMasUsados();
+            console.log("aqui va ingredientes mas usados");
             break;
         case 'Promedio de precios por categoría':
-            await ReporteService.promedioPrecioPorCategoria();
+            console.log("aqui promedio precios categoria");
             break;
         case 'Categoría de pizza más vendida':
-            await ReporteService.categoriaMasVendida();
+            console.log("aqui va categoria pizza mas vendida");
             break;
         case 'Volver al menú principal':
             return;
