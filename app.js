@@ -7,6 +7,16 @@ import { Cliente } from './models/Cliente.js';
 import { Pizza } from './models/Pizza.js';
 import { Pedido } from './models/Pedido.js';
 
+async function pressEnterToContinue() {
+    await inquirer.prompt([
+        {
+            type: 'input',
+            name: 'continue',
+            message: '\nPresione ENTER para continuar...',
+        },
+    ]);
+}
+
 async function main() {
     let exit = false;
     while (!exit) {
@@ -80,6 +90,7 @@ async function registrarNuevoPedido() {
     } catch (error) {
         console.log("No se pudo completar el pedido.");
     } finally {
+        await pressEnterToContinue();
         await database.desconectar();
     }
 }
