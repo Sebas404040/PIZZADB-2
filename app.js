@@ -119,7 +119,7 @@ async function VerReportes() {
             await notificador.mostrarPromedioPrecioPorCategoria();
             break;
         case 'Categoría de pizza más vendida':
-            console.log("aqui va categoria pizza mas vendida");
+            await notificador.mostrarCategoriaMasVendida();
             break;
         case 'Volver al menú principal':
             return;
