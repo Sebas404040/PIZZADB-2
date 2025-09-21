@@ -2,6 +2,7 @@ import inquirer from 'inquirer';
 import cfonts from 'cfonts';
 
 import database from './.config/database.js';
+import notificador from './services/notificador.js';
 
 import { Cliente } from './models/Cliente.js';
 import { Pizza } from './models/Pizza.js';
@@ -112,7 +113,7 @@ async function VerReportes() {
 
     switch (reporte) {
         case 'Ingredientes más utilizados (último mes)':
-            console.log("aqui va ingredientes mas usados");
+            await notificador.mostrarIngredientesMasUsados();
             break;
         case 'Promedio de precios por categoría':
             console.log("aqui promedio precios categoria");
@@ -122,6 +123,9 @@ async function VerReportes() {
             break;
         case 'Volver al menú principal':
             return;
+    }
+    if (reporte !== 'Volver al menú principal') {
+        await pressEnterToContinue();
     }
 }
 
