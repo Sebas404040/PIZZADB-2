@@ -55,6 +55,12 @@ class Database {
         return db.collection(name);
     }
 
+    // Inicia y retorna una nueva sesión para transacciones.
+    async startSession() {
+        await this.realizarConexion();
+        return this.cliente.startSession();
+    }
+
     // Método para desconectarse de la base de datos
     async desconectar() {
         if (this.db) {

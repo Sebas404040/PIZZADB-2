@@ -125,7 +125,7 @@ export const pedidosSchema = {
                 }
             },
             total: {
-                bsonType: "double",
+                bsonType: ["double", "int"],
                 minimum: 0,
                 description: "debe ser un número de punto flotante y es obligatorio"
             },

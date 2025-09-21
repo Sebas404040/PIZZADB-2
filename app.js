@@ -1,9 +1,11 @@
 import inquirer from 'inquirer';
 import cfonts from 'cfonts';
-import { client, dbName } from './db/connection.js';
+
+import database from './.config/database.js';
 
 import { Cliente } from './models/Cliente.js';
 import { Pizza } from './models/Pizza.js';
+import { Pedido } from './models/Pedido.js';
 
 async function main() {
     let exit = false;
@@ -38,6 +40,7 @@ async function main() {
                 break;
             case 'Salir':
                 exit = true;
+                await database.desconectar(); 
                 console.log("\n¡Gracias por usar nuestro sistema! 👋");
                 break;
         }
@@ -46,11 +49,11 @@ async function main() {
 
 async function registrarNuevoPedido() {
     try {
-        await client.connect();
-        const db = client.db(dbName);
+        const clientesCollection = await database.getCollection('clientes');
+        const pizzasCollection = await database.getCollection('pizzas');
 
-        const clientesData = await db.collection('clientes').find({}).toArray();
-        const pizzasData = await db.collection('pizzas').find({}).toArray();
+        const clientesData = await clientesCollection.find({}).toArray();
+        const pizzasData = await pizzasCollection.find({}).toArray();
 
         const clientes = clientesData.map(c => new Cliente(c));
         const pizzas = pizzasData.map(p => new Pizza(p));
@@ -67,25 +70,17 @@ async function registrarNuevoPedido() {
             name: 'pizzasSeleccionadas',
             message: 'Selecciona las pizzas que deseas pedir:',
             choices: pizzas.map(p => ({ name: `${p.nombre} - $${p.precio}`, value: p })),
-            validate: function (answer) {
-                if (answer.length < 1) {
-                    return 'Debes seleccionar al menos una pizza.';
-                }
-                return true;
-            }
+            validate: answer => answer.length > 0 ? true : 'Debes seleccionar al menos una pizza.'
         });
 
-        await client.close();
-
         const nuevoPedido = new Pedido(clienteSeleccionado, pizzasSeleccionadas);
-
+        
         await nuevoPedido.guardar();
 
     } catch (error) {
-        console.error("Error al procesar el nuevo pedido:", error);
-        if (client) {
-            await client.close();
-        }
+        console.log("No se pudo completar el pedido.");
+    } finally {
+        await database.desconectar();
     }
 }
 
@@ -106,13 +101,13 @@ async function VerReportes() {
 
     switch (reporte) {
         case 'Ingredientes más utilizados (último mes)':
-            console.log("aqui va ingredientes mas usados");
+            await ReporteService.ingredientesMasUsados();
             break;
         case 'Promedio de precios por categoría':
-            console.log("aqui va promedio precio categoria");
+            await ReporteService.promedioPrecioPorCategoria();
             break;
         case 'Categoría de pizza más vendida':
-            console.log("aqui va pizza mas vendida");
+            await ReporteService.categoriaMasVendida();
             break;
         case 'Volver al menú principal':
             return;
