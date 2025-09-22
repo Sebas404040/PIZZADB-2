@@ -103,7 +103,7 @@ export const pedidosSchema = {
     $jsonSchema: {
         bsonType: "object",
         title: "Esquema de Pedido",
-        required: ["clienteId", "pizzas", "total", "fecha", "repartidorAsignadoId"],
+        required: ["clienteId", "pizzas", "total", "fecha", "repartidorAsignadoId", "estado"],
         properties: {
             clienteId: {
                 bsonType: "objectId",
@@ -140,6 +140,11 @@ export const pedidosSchema = {
             repartidorAsignadoId: {
                 bsonType: "objectId",
                 description: "debe ser un ObjectId de la colección repartidores y es obligatorio"
+            },
+            estado: {
+                bsonType: "string",
+                enum: ["en_proceso", "completado", "cancelado"],
+                description: "debe ser 'en_proceso', 'completado' o 'cancelado'"
             }
         }
     }

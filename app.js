@@ -36,6 +36,7 @@ async function main() {
                 message: '🍕 ¡Bienvenido a Pizzadb 2! ¿Qué deseas hacer?',
                 choices: [
                     'Registrar un nuevo pedido',
+                    'Cancelar un pedido',
                     'Ver reportes de ventas',
                     'Salir'
                 ],
@@ -45,6 +46,9 @@ async function main() {
         switch (action) {
             case 'Registrar un nuevo pedido':
                 await registrarNuevoPedido();
+                break;
+            case 'Cancelar un pedido':
+                await CancelarPedido();
                 break;
             case 'Ver reportes de ventas':
                 await VerReportes();
@@ -90,6 +94,39 @@ async function registrarNuevoPedido() {
 
     } catch (error) {
         console.log("No se pudo completar el pedido.");
+    } finally {
+        await pressEnterToContinue();
+        await database.desconectar();
+    }
+}
+
+async function CancelarPedido() {
+    try {
+        const pedidosCollection = await database.getCollection('pedidos');
+        
+        const pedidosActivos = await pedidosCollection.find({ estado: { $ne: 'cancelado' } }).toArray();
+
+        if (pedidosActivos.length === 0) {
+            console.log("\nNo hay pedidos activos para cancelar.");
+            return;
+        }
+
+        const { pedidoIdParaCancelar } = await inquirer.prompt([
+            {
+                type: 'list',
+                name: 'pedidoIdParaCancelar',
+                message: 'Selecciona el pedido que deseas cancelar:',
+                choices: pedidosActivos.map(pedido => ({
+                    name: `Pedido del ${new Date(pedido.fecha).toLocaleString()} - Total: $${pedido.total}`,
+                    value: pedido._id
+                }))
+            }
+        ]);
+
+        await Pedido.cancelar(pedidoIdParaCancelar);
+
+    } catch (error) {
+        console.log("No se pudo completar la cancelación.");
     } finally {
         await pressEnterToContinue();
         await database.desconectar();

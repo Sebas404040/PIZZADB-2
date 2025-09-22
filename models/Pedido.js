@@ -7,6 +7,7 @@ export class Pedido {
         this.clienteId = cliente._id;
         this.fecha = new Date();
         this.repartidorAsignadoId = null;
+        this.estado = "en_proceso";
 
         const pizzaCounts = new Map();
         pizzasSeleccionadas.forEach(pizza => {
@@ -19,10 +20,10 @@ export class Pedido {
             pizzaId: new ObjectId(pizzaId),
             cantidad: cantidad
         }));
-        
+
         this.total = pizzasSeleccionadas.reduce((sum, pizza) => sum + pizza.precio, 0);
 
-        this._pizzasData = pizzasSeleccionadas; 
+        this._pizzasData = pizzasSeleccionadas;
     }
 
     // Guarda el pedido en la base de datos ejecutando una transacción.
@@ -54,7 +55,7 @@ export class Pedido {
                         throw new Error(`Stock insuficiente para el ingrediente: ${ingrediente?.nombre || ingId}`);
                     }
                 }
-                
+
                 // Lógica de asignación de repartidor
                 const repartidor = await repartidoresCollection.findOne({ estado: 'disponible' }, { session });
                 if (!repartidor) {
@@ -84,13 +85,79 @@ export class Pedido {
                     pizzas: this.pizzas,
                     total: this.total,
                     fecha: this.fecha,
-                    repartidorAsignadoId: this.repartidorAsignadoId
+                    repartidorAsignadoId: this.repartidorAsignadoId,
+                    estado: this.estado
                 }, { session });
 
                 console.log("✅ ¡Pedido realizado con éxito!");
             });
         } catch (error) {
             console.error("❌ Error en la transacción del pedido: " + error.message);
+            throw error;
+        } finally {
+            await session.endSession();
+        }
+    }
+
+    static async cancelar(pedidoId) {
+        const session = await database.startSession();
+
+        try {
+            await session.withTransaction(async () => {
+                const pedidosCollection = await database.getCollection('pedidos');
+                const ingredientesCollection = await database.getCollection('ingredientes');
+                const repartidoresCollection = await database.getCollection('repartidores');
+
+                // 1. Encontrar el pedido que se va a cancelar
+                const pedido = await pedidosCollection.findOne({ _id: pedidoId }, { session });
+                if (!pedido) throw new Error("El pedido no existe.");
+                if (pedido.estado === 'cancelado') throw new Error("Este pedido ya ha sido cancelado.");
+
+                // 2. Calcular los ingredientes a devolver al stock
+                const pizzasCollection = await database.getCollection('pizzas');
+                const ingredientesADevolver = new Map();
+
+                for (const itemPizza of pedido.pizzas) {
+                    const pizzaInfo = await pizzasCollection.findOne({ _id: itemPizza.pizzaId }, { session });
+                    for (const ingId of pizzaInfo.ingredientes) {
+                        const ingIdStr = ingId.toString();
+                        const count = ingredientesADevolver.get(ingIdStr) || 0;
+                        // Sumamos la cantidad de ingredientes por la cantidad de pizzas pedidas
+                        ingredientesADevolver.set(ingIdStr, count + itemPizza.cantidad);
+                    }
+                }
+
+                // --- INICIO DE OPERACIONES DE ESCRITURA ---
+
+                // 3. Devolver los ingredientes al stock
+                for (const [ingId, cantidad] of ingredientesADevolver.entries()) {
+                    await ingredientesCollection.updateOne(
+                        { _id: new ObjectId(ingId) },
+                        { $inc: { stock: cantidad } }, // Usamos $inc con un número positivo para sumar
+                        { session }
+                    );
+                }
+
+                // 4. Liberar al repartidor
+                if (pedido.repartidorAsignadoId) { 
+                    await repartidoresCollection.updateOne(
+                        { _id: pedido.repartidorAsignadoId }, 
+                        { $set: { estado: 'disponible' } },
+                        { session }
+                    );
+                }
+
+                // 5. Marcar el pedido como cancelado
+                const resultado = await pedidosCollection.updateOne(
+                    { _id: pedidoId },
+                    { $set: { estado: 'cancelado' } },
+                    { session }
+                );
+
+                console.log("✅ ¡Pedido cancelado exitosamente! El stock y el repartidor han sido restaurados.");
+            });
+        } catch (error) {
+            console.error("❌ Error en la transacción de cancelación: " + error.message);
             throw error;
         } finally {
             await session.endSession();
