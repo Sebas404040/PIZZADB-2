@@ -1,0 +1,32 @@
+{
+  "name": "pizzadb-2",
+  "version": "1.0.0",
+  "description": "La venganza de las pizzas",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sebas404040/PIZZADB-2.git"
+  },
+  "keywords": [
+    "pizza",
+    "DB"
+  ],
+  "author": "Brayan Villabona, Sebastián Gómez, Sergio Lievano",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sebas404040/PIZZADB-2/issues"
+  },
+  "homepage": "https://github.com/Sebas404040/PIZZADB-2#readme",
+  "dependencies": {
+    "boxen": "^5.1.2",
+    "cfonts": "^3.3.1",
+    "chalk": "^4.1.2",
+    "dotenv": "^17.2.2",
+    "inquirer": "^8.2.7",
+    "mongodb": "^6.20.0"
+  }
+}
