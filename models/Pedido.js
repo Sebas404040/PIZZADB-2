@@ -84,7 +84,7 @@ export class Pedido {
                     pizzas: this.pizzas,
                     total: this.total,
                     fecha: this.fecha,
-                    repartidorAsignado: this.repartidorAsignadoId
+                    repartidorAsignadoId: this.repartidorAsignadoId
                 }, { session });
 
                 console.log("✅ ¡Pedido realizado con éxito!");

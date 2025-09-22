@@ -113,8 +113,6 @@ class Notificador {
 
         } catch (error) {
             console.error(chalk.red("Error al generar el reporte de precios por categoría:"), error);
-        } finally {
-            await database.desconectar();
         }
     }
 
@@ -167,8 +165,6 @@ class Notificador {
 
         } catch (error) {
             console.error(chalk.red("Error al generar el reporte de categoría más vendida:"), error);
-        } finally {
-            await database.desconectar();
         }
     }
 }

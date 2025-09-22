@@ -44,7 +44,11 @@ export const pizzasSchema = {
             },
             ingredientes: {
                 bsonType: "array",
-                description: "debe ser un array de ObjectIds de ingredientes y es obligatorio"
+                description: "debe ser un array de ObjectIds de ingredientes y es obligatorio",
+                items: {
+                    bsonType: "objectId",
+                    description: "debe ser un ObjectId que referencia a un ingrediente"
+                }
             }
         }
     }
@@ -99,7 +103,7 @@ export const pedidosSchema = {
     $jsonSchema: {
         bsonType: "object",
         title: "Esquema de Pedido",
-        required: ["clienteId", "pizzas", "total", "fecha", "repartidorAsignado"],
+        required: ["clienteId", "pizzas", "total", "fecha", "repartidorAsignadoId"],
         properties: {
             clienteId: {
                 bsonType: "objectId",
@@ -133,7 +137,7 @@ export const pedidosSchema = {
                 bsonType: "date",
                 description: "debe ser una fecha y es obligatorio"
             },
-            repartidorAsignado: {
+            repartidorAsignadoId: {
                 bsonType: "objectId",
                 description: "debe ser un ObjectId de la colección repartidores y es obligatorio"
             }
