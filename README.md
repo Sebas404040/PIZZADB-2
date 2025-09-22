@@ -1,4 +1,3 @@
-# PIZZADB-2
 # 🍕 PizzaDB-2 - Sistema de Gestión
 
 Sistema de gestión por consola para la cadena de pizzerías "PizzaDB", desarrollado como un taller práctico en Node.js. 
@@ -43,12 +42,12 @@ PIZZADB-2/
 
 El siguiente diagrama de clases ilustra la arquitectura y las relaciones entre los componentes clave del sistema.
 
-![Diagrama UML](./docs/diagrama-UML.jpg)
+![Diagrama UML](./Readme_images/Diagrama_UML.jpeg)
 
 ### Diagrama del Modelo de Datos (NoSQL)
 El siguiente es el diagrama de la base de datos para MongoDB propuesto propuesto, donde ilustra los componentes clave del sistema.
 
-![Diagrama BD](./docs/diagrama-bd.jpg)
+![Diagrama BD](./Readme_images/Diagrama_DB.jpeg)
 
 ---
 
@@ -91,13 +90,13 @@ npm i chalk mongodb boxen cfonts inquirer dotenv
 3. **Configura las variables de entorno:**  
    - Crea un nuevo archivo en la raíz del proyecto llamado `.env`.  
    - Copia el contenido del archivo `.env.example` y pégalo en tu nuevo archivo `.env`.  
-   - Rellena las variables con tus propias credenciales de MongoDB Atlas:  
+   - Rellena las variables con tus propias credenciales de MongoDB Atlas
 
 ```bash
 # Contenido para tu archivo .env
-DB_USER="profe"
-DB_PASSWORD="12345"
-DB_CLUSTER="cluster0.wzrcudo.mongodb.net/"
+DB_USER="usuario"
+DB_PASSWORD="contraseña"
+DB_CLUSTER="cluster"
 DB_NAME="pizzadb" # O el nombre que prefieras para tu base de datos
 ```
 
@@ -168,6 +167,12 @@ Con un total de 2 pizzas vendidas.
 Presione ENTER para continuar...
 ```
 
+## Estructuración de transacciones
+
+En esta sección se presenta como son las etapas de la transacción para realizar un pedido.
+
+
+
 ---
 
 ## 👨‍💻 Autores
@@ -179,3 +184,4 @@ Este proyecto fue desarrollado por:
 | **Juan Sebastián Gómez** | Desarrollador/Estudiante           |
 | **Sergio Liévano** | Desarrollador/Estudiante |
 | **Bryan Villabona**| Desarrollador/Estudiante      |
+
