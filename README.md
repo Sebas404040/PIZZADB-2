@@ -49,6 +49,12 @@ El siguiente es el diagrama de la base de datos para MongoDB propuesto propuesto
 
 ![Diagrama BD](./Readme_images/Diagrama_DB.jpeg)
 
+### Diagrama de capas
+
+Este diagrama muestra cada una de las entidades encargadas para el funcionamiento de pizzaDB.
+
+![Diagrama capas](./Readme_images/Diagrama_capas.png)
+
 ---
 
 ## 🛠️ Tecnologías y Librerías Utilizadas
@@ -212,6 +218,11 @@ Abort (Fallo): Si ocurre cualquier error en cualquiera de los pasos, la transacc
 
 
 ---
+
+## Desarrollo colaborativo y eficiente
+
+🔗 **Gestión colaborativa del proyecto en ClickUp:**  
+[Accede al tablero de tareas y seguimiento en ClickUp](https://sharing.clickup.com/90132514571/b/h/6-901320335198-2/266079446f0445b)
 
 ## 👨‍💻 Autores
 
