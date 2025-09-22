@@ -51,6 +51,14 @@ El siguiente es el diagrama de la base de datos para MongoDB propuesto propuesto
 
 ---
 
+## 🎯 Gestión del Proyecto
+
+El seguimiento de tareas, la planificación de sprints y la gestión general del proyecto se realizaron a través de un tablero en ClickUp.
+
+**➡️ [Ver tablero en ClickUp](https://sharing.clickup.com/90132514571/b/h/6-901320335198-2/266079446f0445b)**
+
+---
+
 ## 🛠️ Tecnologías y Librerías Utilizadas
 
 - **Node.js**: Entorno de ejecución de JavaScript.  
