@@ -171,6 +171,44 @@ Presione ENTER para continuar...
 
 En esta sección se presenta como son las etapas de la transacción para realizar un pedido.
 
+**1. Inicio de la Transacción:**
+
+- Se obtiene una sesión del cliente de MongoDB (database.startSession()).
+Todas las operaciones de base de datos a partir de este punto se agrupan dentro de un bloque session.withTransaction(). Si alguna operación falla, MongoDB revierte automáticamente todos los cambios realizados dentro de este bloque.
+
+
+
+**2. Verificación de Stock de Ingredientes:**
+
+- El sistema calcula la cantidad total de cada ingrediente necesario para todas las pizzas del pedido.
+Se consulta la colección ingredientes para verificar si el stock actual es suficiente para cubrir la demanda del pedido.
+Punto de fallo: Si un solo ingrediente no tiene stock suficiente, la transacción lanza un error y se detiene, sin afectar la base de datos.
+
+**+3. Asignación de Repartidor:**
+
+- Se busca en la colección repartidores un repartidor cuyo estado sea "disponible".
+Punto de fallo: Si no se encuentra ningún repartidor disponible, la transacción lanza un error y se aborta.
+
+**4. Actualización de Inventario (Escritura):**
+
+- Si las verificaciones anteriores son exitosas, el sistema comienza a modificar la base de datos.
+Se recorren los ingredientes requeridos y se descuenta la cantidad utilizada del stock de cada uno en la colección ingredientes usando el operador $inc.
+
+**5. Actualización de Estado del Repartidor (Escritura):**
+
+- El repartidor encontrado en el paso 3 cambia su estado de "disponible" a "ocupado" en la colección repartidores usando el operador `$set`.
+
+**6. Creación del Pedido (Escritura):**
+
+- Finalmente, se inserta el nuevo documento en la colección pedidos con todos los detalles: ID del cliente, pizzas, total, fecha, ID del repartidor asignado y el estado inicial ("en_proceso").
+
+**7. Commit o Abort de la Transacción:**
+
+Commit (Éxito): Si todos los pasos anteriores se ejecutan sin errores, la transacción se confirma (commit). Todos los cambios (reducción de stock, repartidor ocupado y nuevo pedido) se guardan permanentemente en la base de datos.
+
+Abort (Fallo): Si ocurre cualquier error en cualquiera de los pasos, la transacción se anula (abort). MongoDB revierte automáticamente cualquier cambio que se haya intentado realizar. El stock de ingredientes vuelve a su estado original y el repartidor no cambia de estado.
+
+*Este enfoque garantiza la consistencia e integridad de los datos evitando problemas como vender pizzas sin tener ingredientes o asignar un repartidor que no existe, incluso en un entorno con múltiples operaciones simultáneas.*
 
 
 ---
@@ -184,4 +222,3 @@ Este proyecto fue desarrollado por:
 | **Juan Sebastián Gómez** | Desarrollador/Estudiante           |
 | **Sergio Liévano** | Desarrollador/Estudiante |
 | **Bryan Villabona**| Desarrollador/Estudiante      |
-
