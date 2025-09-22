@@ -1,14 +1,18 @@
+// Importaciones
 import { ObjectId } from 'mongodb';
 import database from '../.config/database.js';
 
+// clase Pedido
 export class Pedido {
 
+    // construcción de atributos
     constructor(cliente, pizzasSeleccionadas) {
         this.clienteId = cliente._id;
         this.fecha = new Date();
         this.repartidorAsignadoId = null;
         this.estado = "en_proceso";
 
+        // Contar las cantidades de cada pizza seleccionada
         const pizzaCounts = new Map();
         pizzasSeleccionadas.forEach(pizza => {
             const pizzaIdStr = pizza._id.toString();
@@ -16,19 +20,22 @@ export class Pedido {
             pizzaCounts.set(pizzaIdStr, count + 1);
         });
 
+        // Convertir el mapa a un array de objetos con pizzaId y cantidad
         this.pizzas = Array.from(pizzaCounts.entries()).map(([pizzaId, cantidad]) => ({
             pizzaId: new ObjectId(pizzaId),
             cantidad: cantidad
         }));
 
+        // Calcular el total del pedido
         this.total = pizzasSeleccionadas.reduce((sum, pizza) => sum + pizza.precio, 0);
 
+        // Guardar las pizzas seleccionadas para uso interno
         this._pizzasData = pizzasSeleccionadas;
     }
 
     // Guarda el pedido en la base de datos ejecutando una transacción.
     async guardar() {
-        // Obtenemos una sesión directamente desde nuestro Singleton
+        // Se obtiene una sesión directamente desde el singleton Singleton
         const session = await database.startSession();
 
         try {
@@ -49,6 +56,7 @@ export class Pedido {
                     });
                 });
 
+                // Verificar stock de ingredientes
                 for (const [ingId, cantidad] of ingredientesRequeridos.entries()) {
                     const ingrediente = await ingredientesCollection.findOne({ _id: new ObjectId(ingId) }, { session });
                     if (!ingrediente || ingrediente.stock < cantidad) {
@@ -99,7 +107,10 @@ export class Pedido {
         }
     }
 
+    // Cancela un pedido existente y revierte los cambios en stock y repartidor.
     static async cancelar(pedidoId) {
+
+        // Se obtiene una sesión directamente desde el singleton Singleton
         const session = await database.startSession();
 
         try {

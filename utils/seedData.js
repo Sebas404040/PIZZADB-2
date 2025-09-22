@@ -1,6 +1,8 @@
+// Importaciones necesarias
 import database from '../.config/database.js';
 import { ingredientesSchema, pizzasSchema, clientesSchema, repartidoresSchema, pedidosSchema } from './schemasValidation.js';
 
+// construcción de esquemas y colecciones
 const coleccionesConEsquema = {
     ingredientes: ingredientesSchema,
     pizzas: pizzasSchema,
@@ -9,6 +11,7 @@ const coleccionesConEsquema = {
     pedidos: pedidosSchema
 };
 
+// Apliación de validaciones de esquema a las colecciones
 async function aplicarValidaciones(db) {
     console.log('Aplicando validaciones de esquema...');
     for (const [nombreColeccion, esquema] of Object.entries(coleccionesConEsquema)) {
@@ -29,6 +32,7 @@ async function aplicarValidaciones(db) {
     }
 }
 
+// Función principal para poblar la base de datos
 async function seedDatabase() {
     let db;
     try {

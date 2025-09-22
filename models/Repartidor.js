@@ -1,3 +1,4 @@
+// Clase Repartidor
 export class Repartidor {
     constructor({ _id, nombre, zona, estado }) {
         this._id = _id;

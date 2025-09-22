@@ -1,3 +1,4 @@
+// clase Cliente
 export class Cliente {
     constructor({ _id, nombre, telefono, direccion }) {
         this._id = _id;

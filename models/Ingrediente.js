@@ -1,3 +1,4 @@
+// clase Ingrediente
 export class Ingrediente {
     constructor({ _id, nombre, tipo, stock }) {
         this._id = _id;
